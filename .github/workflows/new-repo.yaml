@@ -6,7 +6,7 @@ jobs:
   master_branch_created:
     name: Master Branch Created Job
     if: github.ref == 'refs/heads/master'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Find and Replace repo name
