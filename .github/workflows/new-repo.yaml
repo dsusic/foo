@@ -1,0 +1,30 @@
+name: New Repository Workflow
+
+on: create
+
+jobs:
+  master_branch_created:
+    name: Master Branch Created Job
+    if: github.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Find and Replace repo name
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "bar"
+          replace: ${{github.event.repository.name}}
+      - name: Replace README
+        run: |
+          rm README.md
+          mv README_TEMPLATE.md README.md
+      - name: Commit files
+        run: |
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "$GITHUB_ACTOR"
+          git commit -m "Update repo name variables from ui-starter-ng13 to ${{github.event.repository.name}}. Update README." -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
